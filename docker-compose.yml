@@ -1,0 +1,15 @@
+datavolume:
+  container_name: yumrepo-data
+  image: debian:latest
+  restart: on-failure:10
+  volumes:
+    - /opt/yumrepo/repository:/usr/share/nginx/html
+
+yumrepo:
+  container_name: yumrepo
+  image: egoexpress/yumrepo
+  restart: on-failure:10
+  volumes_from:
+    - datavolume
+  environment:
+    - VIRTUAL_HOST=${DOCKER_YUMREPO_HOSTNAME}
