@@ -1,15 +1,19 @@
 datavolume:
-  container_name: yumrepo-data
+  container_name: gitlab-data
   image: debian:latest
   restart: on-failure:10
   volumes:
-    - /opt/yumrepo/repository:/usr/share/nginx/html
+    - /opt/gitlab/config:/etc/gitlab
+    - /opt/gitlab/logs:/var/log/gitlab
+    - /opt/gitlab/data:/var/opt/gitlab
 
-yumrepo:
-  container_name: yumrepo
-  image: egoexpress/yumrepo
+gitlab:
+  container_name: gitlab
+  image: gitlab/gitlab-ce
   restart: on-failure:10
   volumes_from:
     - datavolume
   environment:
-    - VIRTUAL_HOST=${DOCKER_YUMREPO_HOSTNAME}
+    - VIRTUAL_HOST=${DOCKER_GITLAB_HOSTNAME}
+    - LETSENCRYPT_HOST=${DOCKER_GITLAB_HOSTNAME}
+    - LETSENCRYPT_EMAIL=${DOCKER_LETSENCRYPT_EMAIL}
